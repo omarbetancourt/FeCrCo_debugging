@@ -6,7 +6,6 @@
   ny = 80 # <- may need to reduced if running on local machine
   xmax = 160 # Koyama 2004, Table 1: "Calculation area, LxL = 160nm x 160nm"
   ymax = 160
-  uniform_refine = 2
 []
 
 [Variables] #c1 = Fe, c2 = Cr, c3 = Co

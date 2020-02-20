@@ -22,12 +22,6 @@
 
   [w3]  # Chemical potential of Co (eV/mol)
   []
-
-  [disp_x]
-  []
-
-  [disp_y]
-  []
 []
 
 
@@ -133,10 +127,6 @@
     type = ADCoupledTimeDerivative
     variable = w3
     v = c3
-  []
-
-  [TensorMechanics]
-    displacements = 'disp_x disp_y'
   []
 []
 
@@ -332,145 +322,15 @@
     derivative_order = 1
   []
 
-##################### START OF ELASTIC STRAIN ENERGY CONTRIBUTION #####################
-# Elastic coefficients converted from GPa to eV/nm^2
-
-  [elasticity_tensor_Fe] # Koyama 2004, Table 1
-    type = ComputeElasticityTensor
-    C_ijkl = '1454.89 845.35 845.35 1454.89 845.35 1454.89 735.43 735.43 735.43'
-    fill_method = symmetric9
-    base_name = iron_el
-  []
-
-  [elasticity_tensor_Cr]  # Koyama 2004, Table 1
-    type = ComputeElasticityTensor
-    C_ijkl = '2184.53 423.17 423.17 2184.53 423.17 2184.53 629.14 629.14 629.14'
-    fill_method = symmetric9
-    #base_name = chromium_el
-  []
-
-  [elasticity_tensor_Co]  # Koyama 2004, Table 1
-    type = ComputeElasticityTensor
-    base_name = cobalt_el
-    C_ijkl = '1454.89 845.35 845.35 1454.89 845.35 1454.89 735.43 735.43 735.43'
-    fill_method = symmetric9
-  []
-
-  [prefactorCr] # Koyama 2004, Equation 4 = [epsilon2{c2-c20}...]
-    type = DerivativeParsedMaterial
-    f_name = prefactorCr
-    constant_names       = 'epsilon2   c20'
-    constant_expressions = '6.1e-3     .4'
-    args = 'c2'
-    function = 'epsilon2*(c2 - c20)'
-  []
-
-  [prefactorCo] # Koyama 2004, Equation 4 = [... + epsilon3{c3-c30}]*del_ij
-    type = DerivativeParsedMaterial
-    f_name = prefactorCo
-    constant_names       = 'epsilon3    c30'
-    constant_expressions = '-7.1e-3     .4'
-    args = 'c3'
-    function = 'epsilon3*(c3 - c30)'
-  []
-
-  [StressFreeStrainFe]
-    type = ComputeEigenstrain
-    eigen_base = 0
-    eigenstrain_name = 'eigenstrainFe'
-    base_name = iron_el
-  []
-
-  [StressFreeStrainCr]
-    type = ComputeVariableEigenstrain
-    prefactor = prefactorCr
-    eigen_base = 1
-    args = 'c2'
-    eigenstrain_name = 'eigenstrainCr'
-    #base_name = chromium_el
-  []
-
-  [StressFreeStrainCo]
-    type = ComputeVariableEigenstrain
-    prefactor = prefactorCo
-    eigen_base = 1
-    args = 'c3'
-    eigenstrain_name = 'eigenstrainCo'
-    base_name = cobalt_el
-  []
-
-  [stressCr]
-    type = ComputeLinearElasticStress
-#    base_name = chromium_el
-  []
-
-  [stressFe]
-    type = ComputeLinearElasticStress
-    base_name = iron_el
-  []
-
-  [stressCo]
-    type = ComputeLinearElasticStress
-    base_name = cobalt_el
-  []
-
-  [strainFe]
-    type = ComputeSmallStrain
-    displacements = 'disp_x disp_y'
-    eigenstrain_names = 'eigenstrainFe'
-    base_name = iron_el
-  []
-
-  [strainCr]
-    type = ComputeSmallStrain
-    displacements = 'disp_x disp_y'
-    eigenstrain_names = 'eigenstrainCr'
-    #base_name = chromium_el
-  []
-
-  [strainCo]
-    type = ComputeSmallStrain
-    displacements = 'disp_x disp_y'
-    eigenstrain_names = 'eigenstrainCo'
-    base_name = cobalt_el
-  []
-
-  [ElasticEnergyFe]
-    type = ElasticEnergyMaterial
-    f_name = ElasticFe
-    base_name = iron_el
-    args = 'c1'
-    derivative_order = 2
-  []
-
-  [ElasticEnergyCr]
-    type = ElasticEnergyMaterial
-    f_name = ElasticCr
-    args = 'c2'
-    derivative_order = 2
-  []
-
-  [ElasticEnergyCo]
-    type = ElasticEnergyMaterial
-    f_name = ElasticCo
-    base_name = cobalt_el
-    args = 'c3'
-    derivative_order = 2
-  []
-
-  ##################### END OF ELASTIC STRAIN ENERGY CONTRIBUTION #####################
-
   [G_system] # Total free energy of the system
     type = DerivativeSumMaterial
     f_name = F_total
-    sum_materials = 'E_G RT_clnc mg_G ElasticCr ElasticFe ElasticCo'
+    sum_materials = 'E_G RT_clnc mg_G'
     args = 'c1 c2 c3'
     outputs = exodus
     derivative_order = 2
   []
 []
-
-
 
 [Preconditioning]
   [coupled]

@@ -334,31 +334,32 @@
 
 [Executioner]
   type = Transient
-  steady_state_detection = true
-  solve_type = PJFNK
-  automatic_scaling = true
+  scheme = bdf2
+
+  solve_type = 'PJFNK'
+  petsc_options_iname = '-pc_type  -sub_pc_type '
+  petsc_options_value = 'asm       lu'
+
   l_max_its = 30
-  l_tol = 1e-6
-  nl_max_its = 50
-  nl_abs_tol = 1e-8
-  end_time = 300   # 1h
-  petsc_options_iname = '-pc_type -ksp_gmres_restart -sub_ksp_type
-                         -sub_pc_type -pc_asm_overlap'
-  petsc_options_value = 'asm      31                  preonly
-                         ilu          1'
+  nl_max_its = 10
+  l_tol = 1.0e-4
+  nl_rel_tol = 1.0e-8
+  nl_abs_tol = 1.0e-10
+  start_time = 0.0
+  dtmin = 1.0e-3
 
   [TimeStepper]
     type = IterationAdaptiveDT
+    cutback_factor = 0.7
+    growth_factor = 1.3
     dt = 1
-    cutback_factor = 0.8
-    growth_factor = 1.2
-    optimal_iterations = 9
   []
 
   [Adaptivity]
-    coarsen_fraction = 0.1
-    refine_fraction = 0.7
-    max_h_level = 2
+    interval = 2
+    refine_fraction = 0.2
+    coursen_fraction = 0.3
+    max_h_level = 4
   []
 []
 

@@ -24,12 +24,6 @@
   []
 []
 
-
-[GlobalParams]
-  displacements = 'disp_x disp_y'
-  block = 0
-[]
-
 [AuxVariables]
   [c1]
   []
